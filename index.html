@@ -150,7 +150,7 @@ header {
 /* LANGUAGE */
 
 .en {
-  display: none;
+  display: none !important;
 }
 
 body.lang-en .fr {
@@ -159,6 +159,15 @@ body.lang-en .fr {
 
 body.lang-en .en {
   display: revert !important;
+}
+
+/* Keep only the language-switching option for the other language visible */
+body:not(.lang-en) .menu-dropdown button.en {
+  display: none !important;
+}
+
+body.lang-en .menu-dropdown button.fr {
+  display: none !important;
 }
 
 /* PAGE NAVIGATION */
@@ -855,7 +864,10 @@ footer a:hover {
   <section class="hero-slider" aria-label="Présentation du projet">
     <div class="slider-track" id="sliderTrack">
 
-      <div class="slide" style="background-image:linear-gradient(135deg,#77847b,#343c37)">
+      <div class="slide" style="background-image:linear-gradient(rgba(35, 45, 39, 0.55), rgba(35, 45, 39, 0.55)),url('img/main.png'),linear-gradient(135deg, #77847b, #343c37);
+        background-size: cover, cover, cover;
+        background-position: center, center, center;
+        background-repeat: no-repeat;">
         <div class="slide-content">
           <h1>Habitat Chauveau</h1>
           <p class="fr">17 logements modernes · Livraison le 1er janvier</p>
@@ -1030,7 +1042,7 @@ footer a:hover {
         <iframe
           title="Carte de localisation de Habitat Chauveau"
           src="https://www.google.com/maps?q=85%20Chauveau%2C%20Gatineau%2C%20QC&output=embed"
-          loading="lazy"
+          loading="lazy" draggable="false"
           referrerpolicy="no-referrer-when-downgrade"
           allowfullscreen>
         </iframe>
