@@ -545,17 +545,20 @@ h3 {
 .booking-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 2.5rem;
-  max-width: 1000px;
+  gap: 2rem;
   margin: 2rem auto 0;
-  align-items: start;
+  align-items: stretch;
 }
 
-.booking-form {
+.booking-form,
+.booking-calendar {
+  box-sizing: border-box;
+  min-width: 0;
   padding: 1.5rem;
   background: var(--soft);
   border: 1px solid var(--line);
   border-radius: var(--radius);
+  height: 100%;
 }
 
 .booking-form h3,
@@ -565,20 +568,21 @@ h3 {
   margin: 0 0 1.25rem;
 }
 
-form {
+.booking-form form {
   display: grid;
   gap: 1rem;
 }
 
-form label {
+.booking-form form label {
   display: grid;
   gap: .4rem;
   color: var(--muted);
   font-size: .85rem;
 }
 
-form input:not([type="checkbox"]),
-form select {
+.booking-form form input:not([type="checkbox"]),
+.booking-form form select {
+  box-sizing: border-box;
   width: 100%;
   min-height: 45px;
   padding: .7rem .8rem;
@@ -590,25 +594,25 @@ form select {
   font-size: .9rem;
 }
 
-form input:focus,
-form select:focus {
+.booking-form form input:focus,
+.booking-form form select:focus {
   outline: 2px solid var(--highlight);
   outline-offset: 1px;
 }
 
-.consent-label {
+.booking-form .consent-label {
   display: flex;
   align-items: flex-start;
   gap: .65rem;
   line-height: 1.6;
 }
 
-.consent-label input {
+.booking-form .consent-label input {
   flex: 0 0 auto;
   margin-top: .35rem;
 }
 
-.btn {
+.booking-form .btn {
   display: inline-flex;
   justify-content: center;
   align-items: center;
@@ -626,24 +630,58 @@ form select:focus {
   transition: background .2s, transform .2s;
 }
 
-.btn:hover {
+.booking-form .btn:hover {
   background: #565d59;
   transform: translateY(-1px);
+}
+
+.booking-calendar {
+  display: flex;
+  flex-direction: column;
 }
 
 .booking-calendar p {
   color: var(--muted);
   font-size: .9rem;
+  line-height: 1.7;
+  margin: 0 0 1rem;
 }
 
-.calendar-placeholder {
-  margin-top: 1.25rem;
-  padding: 1.5rem;
-  border: 1px dashed #c9ceca;
-  background: var(--soft);
+.calendly-inline-widget {
+  width: 100%;
+  min-width: 0;
+  height: 650px;
+  margin-top: .5rem;
   border-radius: var(--radius);
-  color: var(--muted);
-  font-size: .9rem;
+  overflow: hidden;
+  background: var(--soft);
+}
+
+@media (max-width: 800px) {
+  .booking-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .booking-form,
+  .booking-calendar {
+    height: auto;
+  }
+
+  .calendly-inline-widget {
+    height: 750px;
+  }
+}
+
+@media (max-width: 480px) {
+  .booking-form,
+  .booking-calendar {
+    padding: 1rem;
+  }
+
+  .calendly-inline-widget {
+    height: 800px;
+  }
 }
 
 /* INSTAGRAM */
@@ -1055,17 +1093,51 @@ footer a:hover {
       <div class="section-header">
         <h3 class="fr">Prise de rendez-vous</h3>
         <h3 class="en">Appointments</h3>
+
         <h2 class="fr">Prenez rendez-vous</h2>
         <h2 class="en">Schedule a Visit</h2>
+
         <div class="section-hr"></div>
-        <p class="fr">Remplissez le formulaire pour nous faire part de votre intérêt.</p>
-        <p class="en">Fill out the form to tell us which home interests you.</p>
+
+        <p class="fr">Choisissez une plage horaire ou remplissez le formulaire pour que nous puissions communiquer avec vous.</p>
+        <p class="en">Choose an available time slot or fill out the form so we can get in touch with you.</p>
       </div>
 
       <div class="booking-grid">
+
+        <!-- FIRST CARD: CALENDAR -->
+        <div class="booking-calendar">
+          <h3 class="fr">Choisissez votre créneau</h3>
+          <h3 class="en">Choose Your Time Slot</h3>
+
+          <p class="fr">
+            Sélectionnez une date et une heure disponibles pour planifier votre visite.
+          </p>
+
+          <p class="en">
+            Select an available date and time to schedule your visit.
+          </p>
+
+          <div
+            id="calendly-embed"
+            class="calendly-inline-widget"
+            data-url="https://calendly.com/alitorabi/30min?hide_event_type_details=1&hide_gdpr_banner=1"
+            style="min-width:0;height:650px;">
+          </div>
+        </div>
+
+        <!-- SECOND CARD: CONTACT FORM -->
         <div class="booking-form">
-          <h3 class="fr">Vos informations</h3>
-          <h3 class="en">Your Information</h3>
+          <h3 class="fr">Vous souhaitez en savoir plus?</h3>
+          <h3 class="en">Just Looking for More Information?</h3>
+
+          <p class="fr">
+            Laissez-nous vos coordonnées et nous communiquerons avec vous pour répondre à vos questions.
+          </p>
+
+          <p class="en">
+            Leave us your contact details and we'll get in touch to answer your questions.
+          </p>
 
           <form id="bookingForm" onsubmit="handleBookingSubmit(event)">
             <label>
@@ -1082,8 +1154,7 @@ footer a:hover {
                 name="email"
                 autocomplete="email"
                 placeholder="exemple@courriel.com"
-                required
-              >
+                required>
             </label>
 
             <label>
@@ -1094,59 +1165,25 @@ footer a:hover {
                 name="phone"
                 autocomplete="tel"
                 placeholder="514-555-1234"
-                pattern="(\+1[ .-]?)?(\((204|226|236|249|250|257|263|289|306|343|354|365|367|368|382|387|403|416|418|428|431|437|438|450|468|474|506|514|519|548|579|581|584|587|604|613|639|647|672|683|705|709|742|753|778|780|782|807|819|825|867|873|879)\)|((204|226|236|249|250|257|263|289|306|343|354|365|367|368|382|387|403|416|418|428|431|437|438|450|468|474|506|514|519|548|579|581|584|587|604|613|639|647|672|683|705|709|742|753|778|780|782|807|819|825|867|873|879))[ .-]?)?[2-9][0-9]{2}[ .-]?[0-9]{4}"
-                title="Enter a Canadian phone number with a valid area code and 7 following digits."
-                required
-              >
-            </label>
-
-            <label>
-              <span class="fr">Type de logement intéressé</span>
-              <span class="en">Unit Type of Interest</span>
-              <select name="unitType" id="unitType">
-                <option value="A" class="fr">Type A — Studio avec coin nuit ouvert</option>
-                <option value="B" class="fr">Type B — 2 chambres + rangement</option>
-                <option value="C" class="fr">Type C — 1 chambre + rangement</option>
-                <option value="D" class="fr">Type D — 1 chambre + rangement</option>
-                <option value="D1" class="fr">Type D1 — 2 chambres</option>
-                <option value="multiple" class="fr">Quelques unités</option>
-
-                <option value="A" class="en">Type A — Studio with Open Sleeping Area</option>
-                <option value="B" class="en">Type B — 2 Bedrooms + Storage</option>
-                <option value="C" class="en">Type C — 1 Bedroom + Storage</option>
-                <option value="D" class="en">Type D — 1 Bedroom + Storage</option>
-                <option value="D1" class="en">Type D1 — 2 Bedrooms</option>
-                <option value="multiple" class="en">Multiple Units</option>
-              </select>
+                required>
             </label>
 
             <label class="consent-label">
               <input type="checkbox" name="consent" required>
-              <span class="fr">J'accepte que mes renseignements soient utilisés pour organiser ma visite.</span>
-              <span class="en">I agree that my information may be used to arrange my visit.</span>
+              <span class="fr">J'accepte que mes renseignements soient utilisés pour répondre à ma demande.</span>
+              <span class="en">I agree that my information may be used to respond to my inquiry.</span>
             </label>
 
             <button type="submit" class="btn">
-              <span class="fr">Continuer</span>
-              <span class="en">Continue</span>
+              <span class="fr">Envoyer ma demande</span>
+              <span class="en">Send My Inquiry</span>
             </button>
           </form>
         </div>
 
-        <div class="booking-calendar">
-          <h3 class="fr">Choisissez votre créneau</h3>
-          <h3 class="en">Choose Your Time Slot</h3>
-
-          <p class="fr">Sélectionnez un horaire disponible dans notre calendrier, lorsqu'il sera configuré. Notre équipe confirmera votre visite par courriel.</p>
-          <p class="en">Select an available time in our calendar once it has been configured. Our team will confirm your visit by email.</p>
-
-          <div id="calendly-embed" class="calendar-placeholder">
-            <p class="fr">📅 Le calendrier de réservation sera disponible prochainement.</p>
-            <p class="en">📅 The appointment calendar will be available soon.</p>
-          </div>
-        </div>
       </div>
     </section>
+
 
     <!-- INSTAGRAM -->
 
@@ -1602,11 +1639,6 @@ function handleBookingSubmit(event) {
 
   alert(message);
 
-  document.getElementById('calendly-embed').scrollIntoView({
-    behavior: 'smooth',
-    block: 'center'
-  });
-
   console.info('Booking form submitted locally:', {
     name,
     email,
@@ -1614,6 +1646,11 @@ function handleBookingSubmit(event) {
     unitType: data.get('unitType')
   });
 }
+
+const calendlyScript = document.createElement('script');
+calendlyScript.src = 'https://assets.calendly.com/assets/external/widget.js';
+calendlyScript.async = true;
+document.body.appendChild(calendlyScript);
 
 </script>
 
