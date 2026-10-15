@@ -1,0 +1,22 @@
+name: Deploy to GoDaddy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Upload files via SFTP
+        uses: pressinfra/action-scp@master
+        with:
+          host: ${{ secrets.GODADDY_HOST }}
+          port: ${{ secrets.GODADDY_PORT }}
+          username: ${{ secrets.GODADDY_USER }}
+          password: ${{ secrets.GODADDY_PASSWORD }}
+          local: "./"
+          remote: "/public_html/"
